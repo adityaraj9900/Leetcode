@@ -1,29 +1,61 @@
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 class MyHashMap {
-    int[] mp;
+    private List<List<Pair<Integer, Integer>>> mp;
+    private int size = 10;
+class Pair<K, V> {
+    K first;
+    V second;
+    public Pair(K first, V second) {
+        this.first = first;
+        this.second = second;
+    }
+}
+    // Constructor
     public MyHashMap() {
-    mp=new int[1000001];
-    Arrays.fill(mp,-1);
+        mp = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            mp.add(new LinkedList<>());
+        }
     }
-    
+    // Hash function
+    private int hash(int key) {
+        return key % size;
+    }
+    // Put method to insert a key-value pair
     public void put(int key, int value) {
-        mp[key]=value;  
+        int i = hash(key);
+        List<Pair<Integer, Integer>> bucket = mp.get(i);
+        for (Pair<Integer, Integer> pair : bucket) {
+            if (pair.first.equals(key)) {
+                pair.second = value;
+                return;
+            }
+        }
+        bucket.add(new Pair<>(key, value));
     }
-    
+    // Get method to retrieve the value associated with a key
     public int get(int key) {
-        return mp[key];
-        
+        int i = hash(key);
+        List<Pair<Integer, Integer>> bucket = mp.get(i);
+        for (Pair<Integer, Integer> pair : bucket) {
+            if (pair.first.equals(key)) {
+                return pair.second;
+            }
+        }
+        return -1;
     }
-    
+    // Remove method to delete a key-value pair
     public void remove(int key) {
-        mp[key]=-1;
-        
+        int i = hash(key);
+        List<Pair<Integer, Integer>> bucket = mp.get(i);
+        for (Pair<Integer, Integer> pair : bucket) {
+            if (pair.first.equals(key)) {
+                bucket.remove(pair);
+                return;
+            }
+        }
     }
 }
 
-/**
- * Your MyHashMap object will be instantiated and called as such:
- * MyHashMap obj = new MyHashMap();
- * obj.put(key,value);
- * int param_2 = obj.get(key);
- * obj.remove(key);
- */
